@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 #  Training script for picking random hostname from $AVAIL_HOSTNAMES file
-#+ and putting it into $INUSE_HOSTNAME file
+#+ and putting it into $INUSE_HOSTNAMES file
 #
 #  Written by Yuferev Kirill
 #  Version 0.1
@@ -36,7 +36,6 @@ usage(){
 #+ checks if $INUSE_HOSTNAMES is present
 check_file(){
 	if [[ -f $AVAIL_HOSTNAMES ]] && [[ -r $AVAIL_HOSTNAMES ]] && [[ -s $AVAIL_HOSTNAMES ]]; then
-	if test -f $AVAIL_HOSTNAMES && test -r $AVAIL_HOSTNAMES && test -s $AVAIL_HOSTNAMES; then
 		echo "INFO: $AVAIL_HOSTNAMES file is present, checking $INUSE_HOSTNAME..."
 	else
 		echo "ERROR: something wrong with $AVAIL_HOSTNAMES file."
@@ -57,7 +56,10 @@ check_file(){
 #+ $INUSE_HOSTNAMES. Then result is shown to a user.
 pick(){
 	HOSTNAME=`shuf -n $NUMBER $AVAIL_HOSTNAMES`
-	sed -i -e '/$HOSTNAME/{w $INUSE_HOSTNAMES' -e 'd}' $AVAIL_HOSTNAMES
+#	sed -i -e "/$HOSTNAME/{w $INUSE_HOSTNAMES" -e 'd}' $AVAIL_HOSTNAMES
+	grep -i -x "$HOSTNAME" $AVAIL_HOSTNAMES >> $INUSE_HOSTNAMES
+	grep -i -x -v "$HOSTNAME" $AVAIL_HOSTNAMES > TMP_FILE; mv TMP_FILE $AVAIL_HOSTNAMES
+	echo "Your hostnames are:"
 	echo "$HOSTNAME"
 }
 
